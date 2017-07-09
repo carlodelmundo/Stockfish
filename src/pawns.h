@@ -2,7 +2,8 @@
   Stockfish, a UCI chess playing engine derived from Glaurung 2.1
   Copyright (C) 2004-2008 Tord Romstad (Glaurung author)
   Copyright (C) 2008-2015 Marco Costalba, Joona Kiiski, Tord Romstad
-  Copyright (C) 2015-2017 Marco Costalba, Joona Kiiski, Gary Linscott, Tord Romstad
+  Copyright (C) 2015-2017 Marco Costalba, Joona Kiiski, Gary Linscott, Tord
+  Romstad
 
   Stockfish is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -52,17 +53,15 @@ struct Entry {
     return pawnsOnSquares[c][!!(DarkSquares & s)];
   }
 
-  template<Color Us>
-  Score king_safety(const Position& pos, Square ksq) {
-    return  kingSquares[Us] == ksq && castlingRights[Us] == pos.can_castle(Us)
-          ? kingSafety[Us] : (kingSafety[Us] = do_king_safety<Us>(pos, ksq));
+  template <Color Us> Score king_safety(const Position &pos, Square ksq) {
+    return kingSquares[Us] == ksq && castlingRights[Us] == pos.can_castle(Us)
+               ? kingSafety[Us]
+               : (kingSafety[Us] = do_king_safety<Us>(pos, ksq));
   }
 
-  template<Color Us>
-  Score do_king_safety(const Position& pos, Square ksq);
+  template <Color Us> Score do_king_safety(const Position &pos, Square ksq);
 
-  template<Color Us>
-  Value shelter_storm(const Position& pos, Square ksq);
+  template <Color Us> Value shelter_storm(const Position &pos, Square ksq);
 
   Key key;
   Score score;
@@ -81,7 +80,7 @@ struct Entry {
 typedef HashTable<Entry, 16384> Table;
 
 void init();
-Entry* probe(const Position& pos);
+Entry *probe(const Position &pos);
 
 } // namespace Pawns
 

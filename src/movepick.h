@@ -2,7 +2,8 @@
   Stockfish, a UCI chess playing engine derived from Glaurung 2.1
   Copyright (C) 2004-2008 Tord Romstad (Glaurung author)
   Copyright (C) 2008-2015 Marco Costalba, Joona Kiiski, Tord Romstad
-  Copyright (C) 2015-2017 Marco Costalba, Joona Kiiski, Gary Linscott, Tord Romstad
+  Copyright (C) 2015-2017 Marco Costalba, Joona Kiiski, Gary Linscott, Tord
+  Romstad
 
   Stockfish is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -28,11 +29,11 @@
 #include "types.h"
 
 /// StatBoards is a generic 2-dimensional array used to store various statistics
-template<int Size1, int Size2, typename T = int>
+template <int Size1, int Size2, typename T = int>
 struct StatBoards : public std::array<std::array<T, Size2>, Size1> {
 
-  void fill(const T& v) {
-    T* p = &(*this)[0][0];
+  void fill(const T &v) {
+    T *p = &(*this)[0][0];
     std::fill(p, p + sizeof(*this) / sizeof(*p), v);
   }
 };
@@ -52,7 +53,7 @@ struct ButterflyHistory : public ButterflyBoards {
   void update(Color c, Move m, int v) {
 
     const int D = 324;
-    auto& entry = (*this)[c][from_to(m)];
+    auto &entry = (*this)[c][from_to(m)];
 
     assert(abs(v) <= D); // Consistency check for below formula
 
@@ -68,7 +69,7 @@ struct PieceToHistory : public PieceToBoards {
   void update(Piece pc, Square to, int v) {
 
     const int D = 936;
-    auto& entry = (*this)[pc][to];
+    auto &entry = (*this)[pc][to];
 
     assert(abs(v) <= D); // Consistency check for below formula
 
@@ -86,33 +87,34 @@ typedef StatBoards<PIECE_NB, SQUARE_NB, Move> CounterMoveStat;
 /// stores a full history (based on PieceTo boards instead of ButterflyBoards).
 typedef StatBoards<PIECE_NB, SQUARE_NB, PieceToHistory> CounterMoveHistoryStat;
 
-
 /// MovePicker class is used to pick one pseudo legal move at a time from the
 /// current position. The most important method is next_move(), which returns a
 /// new pseudo legal move each time it is called, until there are no moves left,
 /// when MOVE_NONE is returned. In order to improve the efficiency of the alpha
-/// beta algorithm, MovePicker attempts to return the moves which are most likely
-/// to get a cut-off first.
-namespace Search { struct Stack; }
+/// beta algorithm, MovePicker attempts to return the moves which are most
+/// likely to get a cut-off first.
+namespace Search {
+struct Stack;
+}
 
 class MovePicker {
 public:
-  MovePicker(const MovePicker&) = delete;
-  MovePicker& operator=(const MovePicker&) = delete;
+  MovePicker(const MovePicker &) = delete;
+  MovePicker &operator=(const MovePicker &) = delete;
 
-  MovePicker(const Position&, Move, Value);
-  MovePicker(const Position&, Move, Depth, Square);
-  MovePicker(const Position&, Move, Depth, Search::Stack*);
+  MovePicker(const Position &, Move, Value);
+  MovePicker(const Position &, Move, Depth, Square);
+  MovePicker(const Position &, Move, Depth, Search::Stack *);
 
   Move next_move(bool skipQuiets = false);
 
 private:
-  template<GenType> void score();
-  ExtMove* begin() { return cur; }
-  ExtMove* end() { return endMoves; }
+  template <GenType> void score();
+  ExtMove *begin() { return cur; }
+  ExtMove *end() { return endMoves; }
 
-  const Position& pos;
-  const Search::Stack* ss;
+  const Position &pos;
+  const Search::Stack *ss;
   Move killers[2];
   Move countermove;
   Depth depth;

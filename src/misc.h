@@ -2,7 +2,8 @@
   Stockfish, a UCI chess playing engine derived from Glaurung 2.1
   Copyright (C) 2004-2008 Tord Romstad (Glaurung author)
   Copyright (C) 2008-2015 Marco Costalba, Joona Kiiski, Tord Romstad
-  Copyright (C) 2015-2017 Marco Costalba, Joona Kiiski, Gary Linscott, Tord Romstad
+  Copyright (C) 2015-2017 Marco Costalba, Joona Kiiski, Gary Linscott, Tord
+  Romstad
 
   Stockfish is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -30,9 +31,9 @@
 #include "types.h"
 
 const std::string engine_info(bool to_uci = false);
-void prefetch(void* addr);
-void prefetch2(void* addr);
-void start_logger(const std::string& fname);
+void prefetch(void *addr);
+void prefetch2(void *addr);
+void start_logger(const std::string &fname);
 
 void dbg_hit_on(bool b);
 void dbg_hit_on(bool c, bool b);
@@ -42,25 +43,23 @@ void dbg_print();
 typedef std::chrono::milliseconds::rep TimePoint; // A value in milliseconds
 
 inline TimePoint now() {
-  return std::chrono::duration_cast<std::chrono::milliseconds>
-        (std::chrono::steady_clock::now().time_since_epoch()).count();
+  return std::chrono::duration_cast<std::chrono::milliseconds>(
+             std::chrono::steady_clock::now().time_since_epoch())
+      .count();
 }
 
-template<class Entry, int Size>
-struct HashTable {
-  Entry* operator[](Key key) { return &table[(uint32_t)key & (Size - 1)]; }
+template <class Entry, int Size> struct HashTable {
+  Entry *operator[](Key key) { return &table[(uint32_t)key & (Size - 1)]; }
 
 private:
   std::vector<Entry> table = std::vector<Entry>(Size);
 };
 
-
 enum SyncCout { IO_LOCK, IO_UNLOCK };
-std::ostream& operator<<(std::ostream&, SyncCout);
+std::ostream &operator<<(std::ostream &, SyncCout);
 
 #define sync_cout std::cout << IO_LOCK
 #define sync_endl std::endl << IO_UNLOCK
-
 
 /// xorshift64star Pseudo-Random Number Generator
 /// This class is based on original code written and dedicated
@@ -90,14 +89,14 @@ class PRNG {
 public:
   PRNG(uint64_t seed) : s(seed) { assert(seed); }
 
-  template<typename T> T rand() { return T(rand64()); }
+  template <typename T> T rand() { return T(rand64()); }
 
   /// Special generator used to fast init magic numbers.
   /// Output values only have 1/8th of their bits set on average.
-  template<typename T> T sparse_rand()
-  { return T(rand64() & rand64() & rand64()); }
+  template <typename T> T sparse_rand() {
+    return T(rand64() & rand64() & rand64());
+  }
 };
-
 
 /// Under Windows it is not possible for a process to run on more than one
 /// logical processor group. This usually means to be limited to use max 64
@@ -106,7 +105,7 @@ public:
 /// Peter Österlund.
 
 namespace WinProcGroup {
-  void bindThisThread(size_t idx);
+void bindThisThread(size_t idx);
 }
 
 #endif // #ifndef MISC_H_INCLUDED
